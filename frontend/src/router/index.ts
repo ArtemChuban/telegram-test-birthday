@@ -1,14 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import InputView from '../views/InputView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'input',
+      name: 'home',
       component: HomeView,
     },
+    {
+      path: '/input',
+      name: 'input',
+      component: InputView,
+    }
   ],
 })
 

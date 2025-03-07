@@ -6,5 +6,30 @@ readme = "README.md"
 requires-python = "~=3.11"
 dependencies = [
     "fastapi>=0.115.11",
+    "pydantic-settings>=2.8.1",
     "uvicorn>=0.34.0",
+    "tortoise-orm>=0.24.2",
+    "asyncpg>=0.30.0",
+    "telegram-webapp-auth>=3.0.2",
 ]
+
+[dependency-groups]
+dev = [
+    "aerich>=0.8.2",
+    "mypy>=1.15.0",
+    "ruff>=0.9.9",
+    "tomlkit>=0.13.2",
+]
+
+[tool.aerich]
+tortoise_orm = "app.settings.TORTOISE_ORM_SETTINGS"
+location = "./migrations"
+src_folder = "./."
+
+[tool.mypy]
+plugins = ['pydantic.mypy']
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["telegram_webapp_auth.*"]
+follow_untyped_imports = true

@@ -1,0 +1,24 @@
+[project]
+name = "bot"
+version = "0.1.0"
+description = "Telegram Bot"
+readme = "README.md"
+requires-python = "~=3.11"
+dependencies = [
+    "aiogram>=3.18.0",
+    "pydantic-settings>=2.8.1",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "ruff>=0.9.9",
+]
+
+[tool.mypy]
+plugins = ['pydantic.mypy']
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["telegram_webapp_auth.*"]
+follow_untyped_imports = true

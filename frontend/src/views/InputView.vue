@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import "vue-scroll-picker/style.css";
-import {
-  format,
-  setDate,
-  setHours,
-  setMinutes,
-  setMonth,
-  setSeconds,
-  setYear,
-} from 'date-fns'
-import { computed, ref } from 'vue'
-import { VueScrollPicker, VueScrollPickerValue } from 'vue-scroll-picker'
-import ScrollPicker from 'vue3-scroll-picker';
+import 'vue-scroll-picker/style.css'
+import { setDate, setMonth, setYear } from 'date-fns'
+import { computed, ref, watch } from 'vue'
+import { VueScrollPicker, type VueScrollPickerValue } from 'vue-scroll-picker'
+import router from '@/router'
+import useUser from '@/stores/user'
 
+const user = useUser()
 const currentValue = ref(new Date())
 const currentYear = computed(() => currentValue.value.getFullYear())
 const currentMonth = computed(() => currentValue.value.getMonth() + 1)
 const currentDay = computed(() => currentValue.value.getDate())
 
+watch(
+  () => user.data,
+  (data) => {
+    if (data) router.push('/')
+  },
+)
+
 const years = computed(() => {
   const currYear = new Date().getFullYear()
   const lastYear = 1900
-  return Array.from(
-    { length: currYear - lastYear + 1 },
-    (_, index) => lastYear + index,
-  ).reverse()
+  return Array.from({ length: currYear - lastYear + 1 }, (_, index) => lastYear + index).reverse()
 })
 const monthNames = [
-  "Январь",
-  "Февраль",
-  "Март",
-  "Апреля",
-  "Май",
-  "Июнь",
-  "Июль",
-  "Август",
-  "Сентябрь",
-  "Октябрь",
-  "Ноябрь",
-  "Декабрь",
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ]
-const months = Array.from({ length: 12 }, (_, index) => { return { name: monthNames[index], value: index + 1 } })
+const months = Array.from({ length: 12 }, (_, index) => {
+  return { name: monthNames[index], value: index + 1 }
+})
 const days = computed(() => {
   const lastDay = new Date(currentYear.value, currentMonth.value, 0).getDate()
   return Array.from({ length: lastDay }, (_, index) => `${index + 1}`)
@@ -56,9 +56,11 @@ function handleUpdateDay(value: VueScrollPickerValue | undefined) {
   currentValue.value = setDate(currentValue.value, value as number)
 }
 
-function handleClick() {
-  const date = format(currentValue.value, 'yyyy-MM-dd');
-  console.log(date)
+async function handleClick() {
+  const success = await user.register(currentValue.value)
+  if (success) {
+    router.push('/')
+  }
 }
 </script>
 
@@ -66,11 +68,25 @@ function handleClick() {
   <div class="flex flex-col justify-between h-full pb-5 gap-5">
     <h1 class="text-xl text-white font-bold text-center">Введите свою дату рождения</h1>
     <div class="picker-group">
-      <VueScrollPicker :options="years" :model-value="currentYear" @update:model-value="handleUpdateYear" />
-      <VueScrollPicker :options="months" :model-value="currentMonth" @update:model-value="handleUpdateMonth" />
-      <VueScrollPicker :options="days" :model-value="currentDay" @update:model-value="handleUpdateDay" />
+      <VueScrollPicker
+        :options="years"
+        :model-value="currentYear"
+        @update:model-value="handleUpdateYear"
+      />
+      <VueScrollPicker
+        :options="months"
+        :model-value="currentMonth"
+        @update:model-value="handleUpdateMonth"
+      />
+      <VueScrollPicker
+        :options="days"
+        :model-value="currentDay"
+        @update:model-value="handleUpdateDay"
+      />
     </div>
-    <button class="bg-white text-black rounded-xl w-full py-3 z-10" @click="handleClick">Продолжить</button>
+    <button class="bg-white text-black rounded-xl w-full py-3 z-10" @click="handleClick">
+      Continue
+    </button>
   </div>
 </template>
 
@@ -89,7 +105,7 @@ function handleClick() {
   opacity: 50%;
 }
 
-.vue-scroll-picker-item[aria-selected=true] {
+.vue-scroll-picker-item[aria-selected='true'] {
   color: white;
   opacity: 100%;
 }

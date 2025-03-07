@@ -14,7 +14,7 @@ const router = createRouter({
       path: '/input',
       name: 'input',
       component: InputView,
-    }
+    },
   ],
 })
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import 'vue-scroll-picker/style.css'
 import { setDate, setMonth, setYear } from 'date-fns'
-import { computed, ref, watch } from 'vue'
+import { onMounted, onUnmounted, computed, ref, watch } from 'vue'
 import { VueScrollPicker, type VueScrollPickerValue } from 'vue-scroll-picker'
 import router from '@/router'
 import useUser from '@/stores/user'
@@ -56,17 +56,28 @@ function handleUpdateDay(value: VueScrollPickerValue | undefined) {
   currentValue.value = setDate(currentValue.value, value as number)
 }
 
-async function handleClick() {
+async function handleMainButtonClick() {
   const success = await user.register(currentValue.value)
   if (success) {
     router.push('/')
   }
 }
+
+onMounted(() => {
+  window.Telegram.WebApp.MainButton.show()
+    .enable()
+    .setText('Continue')
+    .onClick(handleMainButtonClick)
+})
+
+onUnmounted(() => {
+  window.Telegram.WebApp.MainButton.hide().offClick(handleMainButtonClick)
+})
 </script>
 
 <template>
   <div class="flex flex-col justify-between h-full pb-5 gap-5">
-    <h1 class="text-xl text-white font-bold text-center">Введите свою дату рождения</h1>
+    <h1 class="text-xl text-white font-bold text-center">Enter your birthday date</h1>
     <div class="picker-group">
       <VueScrollPicker
         :options="years"
@@ -84,9 +95,6 @@ async function handleClick() {
         @update:model-value="handleUpdateDay"
       />
     </div>
-    <button class="bg-white text-black rounded-xl w-full py-3 z-10" @click="handleClick">
-      Continue
-    </button>
   </div>
 </template>
 

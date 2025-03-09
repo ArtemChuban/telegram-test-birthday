@@ -3,7 +3,7 @@ from datetime import date
 from app.auth import get_current_user
 from app.models import Users
 from app.schemas import UserSchema
-from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi import APIRouter, Body, Depends, HTTPException, Path, status
 from telegram_webapp_auth.data import WebAppUser
 
 router = APIRouter(prefix="/users")
@@ -25,6 +25,7 @@ async def create_user(
         birthday=birthday,
     )
     return UserSchema(
+        id=instance.id,
         first_name=instance.first_name,
         last_name=instance.last_name,
         username=instance.username,
@@ -40,6 +41,23 @@ async def get_me(
     if instance is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     return UserSchema(
+        id=instance.id,
+        first_name=instance.first_name,
+        last_name=instance.last_name,
+        username=instance.username,
+        birthday=instance.birthday,
+    )
+
+
+@router.get("/{user_id}")
+async def get_user(
+    user_id: int = Path(),
+) -> UserSchema:
+    instance = await Users.get_or_none(id=user_id)
+    if instance is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND)
+    return UserSchema(
+        id=instance.id,
         first_name=instance.first_name,
         last_name=instance.last_name,
         username=instance.username,

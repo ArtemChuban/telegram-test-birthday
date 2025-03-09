@@ -2,13 +2,11 @@
 import '@/assets/main.css'
 import { RouterView } from 'vue-router'
 import useUser from '@/stores/user'
-import { onMounted } from 'vue'
+import router from '@/router'
 
-const user = useUser()
-
-onMounted(() => {
-  user.fetch()
-})
+const { start_param: startParam = '' } = window.Telegram.WebApp.initDataUnsafe || {}
+router.push(`/${startParam}`)
+useUser().fetch()
 </script>
 
 <template>

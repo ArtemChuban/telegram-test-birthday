@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 import { formatISO } from 'date-fns'
 import { ref } from 'vue'
 
-interface UserData {
+export interface UserData {
+  id: number
   first_name: string
   last_name?: string
   username?: string
@@ -13,8 +14,8 @@ const useUser = defineStore('user', () => {
   const token = window.Telegram.WebApp.initData
   const data = ref<UserData | null | undefined>(undefined)
 
-  async function fetchUser() {
-    const response = await fetch('http://192.168.31.220:8000/users/me', {
+  async function fetchUser(): Promise<void> {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -30,7 +31,7 @@ const useUser = defineStore('user', () => {
   }
 
   async function register(date: Date): Promise<boolean> {
-    const response = await fetch('http://192.168.31.220:8000/users', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/users`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,7 +45,20 @@ const useUser = defineStore('user', () => {
     return true
   }
 
-  return { token, data, fetch: fetchUser, register }
+  async function getUser(userId: number): Promise<UserData | null> {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/users/${userId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+    if (!response.ok) return null
+    const { birthday, ...rest } = await response.json()
+    return { ...rest, birthday: new Date(birthday) }
+  }
+
+  return { token, data, fetch: fetchUser, register, getUser }
 })
 
 export default useUser

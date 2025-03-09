@@ -8,7 +8,7 @@ import LoaderSpinner from '@/components/LoaderSpinner.vue'
 const user = useUser()
 const shareUrl = computed<string>(() => {
   if (user.data === null || user.data === undefined) return ''
-  return `https://t.me/share/url?url=${import.meta.env.VITE_APP_URL}?startapp=${user.data.id}&text=Look at how much time is left until my birthday`
+  return `https://t.me/share/url?url=${import.meta.env.VITE_WEB_APP_URL}?startapp=${user.data.id}&text=Look at how much time is left until my birthday`
 })
 
 watch(

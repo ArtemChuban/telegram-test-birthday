@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     token: str = Field(alias="TELEGRAM_TOKEN")
-    use_test_server: bool = Field(alias="TEST", default=False)
+    use_test_server: bool = Field(default=False)
     web_app_url: HttpUrl
 
     @property

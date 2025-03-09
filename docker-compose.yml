@@ -1,0 +1,55 @@
+services:
+  backend:
+    build: backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    entrypoint: ./entrypoint.sh
+    environment:
+      - BOT__TOKEN=${TELEGRAM_BOT_TOKEN}
+      - DATABASE__HOST=${POSTGRES_HOST}
+      - DATABASE__PORT=${POSTGRES_PORT}
+      - DATABASE__USER=${POSTGRES_USER}
+      - DATABASE__PASSWORD=${POSTGRES_PASSWORD}
+      - DATABASE__DATABASE=${POSTGRES_DB}
+
+  bot:
+    tty: true
+    build: bot
+    entrypoint: ./entrypoint.sh
+    environment:
+      - TELEGRAM_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - USE_TEST_SERVER=${USE_TEST_SERVER}
+      - WEB_APP_URL=${WEB_APP_URL}
+
+  frontend:
+    build:
+      context: frontend
+      args:
+        VITE_API_URL: ${API_URL}
+        VITE_WEB_APP_URL: ${WEB_APP_URL}
+    ports:
+      - "5173:80"
+
+  postgres:
+    image: postgres:17.4-alpine3.21
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $POSTGRES_DB -U $POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+
+
+volumes:
+  postgres_data:

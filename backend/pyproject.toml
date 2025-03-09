@@ -9,13 +9,13 @@ dependencies = [
     "pydantic-settings>=2.8.1",
     "uvicorn>=0.34.0",
     "tortoise-orm>=0.24.2",
+    "aerich>=0.8.2",
     "asyncpg>=0.30.0",
     "telegram-webapp-auth>=3.0.2",
 ]
 
 [dependency-groups]
 dev = [
-    "aerich>=0.8.2",
     "mypy>=1.15.0",
     "ruff>=0.9.9",
     "tomlkit>=0.13.2",

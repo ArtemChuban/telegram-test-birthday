@@ -1,21 +1,43 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
 import useUser, { type UserData } from '@/stores/user'
 import UserTimer from '@/components/UserTimer.vue'
 import { useRoute } from 'vue-router'
-const route = useRoute()
+import LoaderSpinner from '@/components/LoaderSpinner.vue'
 
+const route = useRoute()
 const user = useUser()
+const loading = ref<boolean>(false)
 const data = ref<UserData | null | undefined>(undefined)
-onMounted(async () => {
-  // TODO: returns null if user not exist, show error message
-  data.value = await user.getUser(Number(route.params.id))
-})
+const error = ref<string | null>(null)
+
+watch(
+  () => route.params.id,
+  (id) => fetchData(Number(id)),
+  { immediate: true },
+)
+
+async function fetchData(id: number) {
+  error.value = data.value = null
+  loading.value = true
+  try {
+    data.value = await user.getUser(id)
+    if (data.value === null) throw new Error('No user found')
+  } catch (e) {
+    error.value = (e as Error).toString()
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
+  <div v-if="loading" class="flex justify-center">
+    <LoaderSpinner />
+  </div>
+  <div class="text-white" v-else-if="error">{{ error }}</div>
   <UserTimer
-    v-if="data"
+    v-else-if="data"
     :first_name="data.first_name"
     :last_name="data.last_name"
     :username="data.username"

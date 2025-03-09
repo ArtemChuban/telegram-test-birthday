@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, computed, watch } from 'vue'
 import router from '@/router'
 import useUser from '@/stores/user'
 import UserTimer from '@/components/UserTimer.vue'
+import LoaderSpinner from '@/components/LoaderSpinner.vue'
 
 const user = useUser()
 const shareUrl = computed<string>(() => {
@@ -38,4 +39,7 @@ function handleMainButtonClick() {
     :username="user.data.username"
     :birthday="user.data.birthday"
   />
+  <div v-else class="flex justify-center">
+    <LoaderSpinner />
+  </div>
 </template>

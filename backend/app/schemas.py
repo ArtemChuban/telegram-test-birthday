@@ -1,11 +1,7 @@
-from datetime import date
+from typing import TypeAlias
 
-from pydantic import BaseModel
+from tortoise.contrib.pydantic import pydantic_model_creator
 
+from app.models import Users
 
-class UserSchema(BaseModel):
-    id: int
-    first_name: str
-    last_name: str | None
-    username: str | None
-    birthday: date
+UserSchema: TypeAlias = pydantic_model_creator(Users)  # type: ignore[valid-type] # mypy interprets the type incorrectly

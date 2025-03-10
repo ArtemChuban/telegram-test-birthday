@@ -14,8 +14,7 @@ async def create_user(
     user: WebAppUser = Depends(get_current_user),
     birthday: date = Body(embed=True),
 ) -> UserSchema:
-    exist = await Users.exists(id=user.id)
-    if exist:
+    if await Users.exists(id=user.id):
         raise HTTPException(status.HTTP_409_CONFLICT)
     instance = await Users.create(
         id=user.id,
@@ -24,13 +23,7 @@ async def create_user(
         username=user.username,
         birthday=birthday,
     )
-    return UserSchema(
-        id=instance.id,
-        first_name=instance.first_name,
-        last_name=instance.last_name,
-        username=instance.username,
-        birthday=instance.birthday,
-    )
+    return await UserSchema.from_tortoise_orm(instance)
 
 
 @router.get("/me")
@@ -40,13 +33,7 @@ async def get_me(
     instance = await Users.get_or_none(id=user.id)
     if instance is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
-    return UserSchema(
-        id=instance.id,
-        first_name=instance.first_name,
-        last_name=instance.last_name,
-        username=instance.username,
-        birthday=instance.birthday,
-    )
+    return await UserSchema.from_tortoise_orm(instance)
 
 
 @router.get("/{user_id}")
@@ -56,10 +43,4 @@ async def get_user(
     instance = await Users.get_or_none(id=user_id)
     if instance is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
-    return UserSchema(
-        id=instance.id,
-        first_name=instance.first_name,
-        last_name=instance.last_name,
-        username=instance.username,
-        birthday=instance.birthday,
-    )
+    return await UserSchema.from_tortoise_orm(instance)

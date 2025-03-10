@@ -20,14 +20,22 @@ watch(
 
 onMounted(() => {
   window.Telegram.WebApp.MainButton.show().enable().setText('Share').onClick(handleMainButtonClick)
+  window.Telegram.WebApp.SecondaryButton.show()
+    .enable()
+    .setText('Edit')
+    .onClick(handleSecondaryButtonClick)
 })
 
 onUnmounted(() => {
   window.Telegram.WebApp.MainButton.hide().offClick(handleMainButtonClick)
+  window.Telegram.WebApp.SecondaryButton.hide().offClick(handleSecondaryButtonClick)
 })
 
 function handleMainButtonClick() {
   window.Telegram.WebApp.openTelegramLink(shareUrl.value)
+}
+function handleSecondaryButtonClick() {
+  router.push('/input')
 }
 </script>
 

@@ -15,8 +15,11 @@ const currentDay = computed(() => currentValue.value.getDate())
 watch(
   () => user.data,
   (data) => {
-    if (data) router.push('/')
+    if (!data) return
+    currentValue.value = data.birthday
+    window.Telegram.WebApp.BackButton.show().onClick(handleBackButtonClick)
   },
+  { immediate: true },
 )
 
 const years = computed(() => {
@@ -56,8 +59,18 @@ function handleUpdateDay(value: VueScrollPickerValue | undefined) {
   currentValue.value = setDate(currentValue.value, value as number)
 }
 
+function handleBackButtonClick() {
+  router.push('/')
+}
+
 async function handleMainButtonClick() {
-  const success = await user.register(currentValue.value)
+  if (user.data === undefined) return
+  let success = false
+  if (user.data === null) {
+    success = await user.register(currentValue.value)
+  } else {
+    success = await user.update(currentValue.value)
+  }
   if (success) {
     router.push('/')
   }
@@ -72,6 +85,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.Telegram.WebApp.MainButton.hide().offClick(handleMainButtonClick)
+  window.Telegram.WebApp.BackButton.hide().offClick(handleBackButtonClick)
 })
 </script>
 

@@ -44,3 +44,16 @@ async def get_user(
     if instance is None:
         raise HTTPException(status.HTTP_404_NOT_FOUND)
     return await UserSchema.from_tortoise_orm(instance)
+
+
+@router.patch("/me")
+async def update_birthday(
+    user: WebAppUser = Depends(get_current_user),
+    birthday: date = Body(embed=True),
+) -> UserSchema:
+    instance = await Users.get_or_none(id=user.id)
+    if instance is None:
+        return HTTPException(status.HTTP_404_NOT_FOUND)
+    instance.birthday = birthday
+    await instance.save()
+    return await UserSchema.from_tortoise_orm(instance)

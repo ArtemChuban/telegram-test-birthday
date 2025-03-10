@@ -7,6 +7,7 @@ import router from '@/router'
 const { start_param: startParam = '' } = window.Telegram.WebApp.initDataUnsafe || {}
 router.push(`/${startParam}`)
 useUser().fetch()
+window.Telegram.WebApp.BackButton.hide()
 </script>
 
 <template>

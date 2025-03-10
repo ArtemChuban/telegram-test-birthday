@@ -58,7 +58,24 @@ const useUser = defineStore('user', () => {
     return { ...rest, birthday: new Date(birthday) }
   }
 
-  return { token, data, fetch: fetchUser, register, getUser }
+  async function update(date: Date): Promise<boolean> {
+    if (!data.value) return false
+    if (data.value.birthday === date) return true
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/users/me`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ birthday: formatISO(date, { representation: 'date' }) }),
+    })
+    if (!response.ok) return false
+    const { birthday } = await response.json()
+    data.value.birthday = new Date(birthday)
+    return true
+  }
+
+  return { token, data, fetch: fetchUser, register, getUser, update }
 })
 
 export default useUser

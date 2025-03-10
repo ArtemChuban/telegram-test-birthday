@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 import useUser, { type UserData } from '@/stores/user'
 import UserTimer from '@/components/UserTimer.vue'
 import { useRoute } from 'vue-router'
+import router from '@/router'
 import LoaderSpinner from '@/components/LoaderSpinner.vue'
 
 const route = useRoute()
@@ -28,6 +29,18 @@ async function fetchData(id: number) {
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  window.Telegram.WebApp.BackButton.show().onClick(handleBackButtonClick)
+})
+
+onUnmounted(() => {
+  window.Telegram.WebApp.BackButton.hide().offClick(handleBackButtonClick)
+})
+
+function handleBackButtonClick() {
+  router.push('/')
 }
 </script>
 

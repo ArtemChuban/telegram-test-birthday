@@ -11,7 +11,9 @@ window.Telegram.WebApp.BackButton.hide()
 </script>
 
 <template>
-  <main class="bg-gradient-to-b from-[#1E2A78] via-[#6E1D67] to-[#160D2C] h-dvh w-dvw p-5">
+  <main
+    class="bg-gradient-to-b from-[#1E2A78] via-[#6E1D67] to-[#160D2C] h-dvh w-dvw p-5 text-white"
+  >
     <RouterView />
   </main>
 </template>

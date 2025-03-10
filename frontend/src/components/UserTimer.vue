@@ -31,12 +31,10 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <h3 class="text-white text-xl text-center font-bold">Time to Birthday</h3>
-  <h1 class="text-white text-2xl font-bold text-center">{{ first_name }} {{ last_name }}</h1>
-  <h2 class="text-white text-xl text-center" v-if="username">@{{ username }}</h2>
+  <h3 class="text-xl text-center font-bold">Time to Birthday</h3>
+  <h1 class="text-2xl font-bold text-center">{{ first_name }} {{ last_name }}</h1>
+  <h2 class="text-xl text-center" v-if="username">@{{ username }}</h2>
   <div v-if="duration" class="flex flex-col items-center gap-4 mt-24">
-    <div v-for="(value, key) in duration" :key="key" class="text-white text-3xl">
-      {{ value }} {{ key }}
-    </div>
+    <div v-for="(value, key) in duration" :key="key" class="text-3xl">{{ value }} {{ key }}</div>
   </div>
 </template>

@@ -105,8 +105,8 @@ onUnmounted(() => {
 
 <template>
   <div class="flex flex-col justify-between h-full pb-5 gap-5">
-    <h1 class="text-xl text-white font-bold text-center">Enter your birthday date</h1>
-    <div class="picker-group">
+    <h1 class="text-xl font-bold text-center">Enter your birthday date</h1>
+    <div class="h-full flex">
       <VueScrollPicker
         :options="years"
         :model-value="currentYear"
@@ -127,11 +127,6 @@ onUnmounted(() => {
 </template>
 
 <style>
-.picker-group {
-  display: flex;
-  height: 100%;
-}
-
 .vue-scroll-picker {
   height: 100%;
 }

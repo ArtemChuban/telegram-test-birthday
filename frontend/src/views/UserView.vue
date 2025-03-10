@@ -48,7 +48,7 @@ function handleBackButtonClick() {
   <div v-if="loading" class="flex justify-center">
     <LoaderSpinner />
   </div>
-  <div class="text-white" v-else-if="error">{{ error }}</div>
+  <div v-else-if="error">{{ error }}</div>
   <UserTimer
     v-else-if="data"
     :first_name="data.first_name"

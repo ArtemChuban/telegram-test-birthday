@@ -41,11 +41,25 @@ const monthNames = [
   'November',
   'December',
 ]
-const months = Array.from({ length: 12 }, (_, index) => {
-  return { name: monthNames[index], value: index + 1 }
+const months = computed(() => {
+  let lastMonth = 12
+  const currentDate = new Date()
+  if (currentYear.value == currentDate.getFullYear()) {
+    lastMonth = currentDate.getMonth() + 1
+  }
+  return Array.from({ length: lastMonth }, (_, index) => {
+    return { name: monthNames[index], value: index + 1 }
+  })
 })
 const days = computed(() => {
-  const lastDay = new Date(currentYear.value, currentMonth.value, 0).getDate()
+  let lastDay = new Date(currentYear.value, currentMonth.value, 0).getDate()
+  const currentDate = new Date()
+  if (
+    currentYear.value === currentDate.getFullYear() &&
+    currentMonth.value === currentDate.getMonth() + 1
+  ) {
+    lastDay = currentDate.getDate()
+  }
   return Array.from({ length: lastDay }, (_, index) => `${index + 1}`)
 })
 
